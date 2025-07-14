@@ -1,0 +1,33 @@
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      titanmindApiToken:
+        type: string
+        description: "Titanmind API token for Meta authentication (recommended). Get your free token at https://platform.titanmindhq.com"
+      metaAppId:
+        type: string
+        description: "Meta App ID (Client ID) for direct OAuth method (only needed if not using Titanmind authentication)"
+    required: []
+  commandFunction: |
+    (config) => {
+      const env = {};
+      const args = ["-m", "meta_ads_mcp"];
+      
+      // Add Titanmind API token to environment if provided (recommended auth method)
+      if (config.titanmindApiToken) {
+        env.TITANMIND_API_TOKEN = config.titanmindApiToken;
+      }
+      
+      // Add Meta App ID as command-line argument if provided (alternative auth method)
+      if (config.metaAppId) {
+        args.push("--app-id", config.metaAppId);
+      }
+      
+      return {
+        command: 'python',
+        args: args,
+        env: env
+      };
+    } 
